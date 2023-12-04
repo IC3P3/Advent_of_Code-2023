@@ -1,6 +1,6 @@
 # Day 3: Gear Ratios
 
-## Part 2
+## Part 1
 
 You and the Elf eventually reach a _gondola lift_ station; he says the gondola lift will take you up to the <u>water source</u>, but this is as far as he can bring you. You go inside.
 

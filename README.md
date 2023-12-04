@@ -9,3 +9,4 @@ The event was founded and is maintained by software engineer Eric Wastl.
 ## Advent calendar
 
 - [Day 1: Trebuchet?!](day1/README.md)
+- [Day 2: Cube Conundrum](day2/README.md)

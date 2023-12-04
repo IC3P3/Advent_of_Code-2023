@@ -93,15 +93,19 @@ fn get_calibration_value_written_numbers(line: &String) -> u64 {
         .iter()
         .filter_map(|(word, num)| line.find(word).map(|_pos| Index { _pos, num: *num }))
         .collect();
+    let reverse_found_numbers: Vec<Index> = possible_numbers
+        .iter()
+        .filter_map(|(word, num)| line.rfind(word).map(|_pos| Index { _pos, num: *num }))
+        .collect();
 
-    let temp = get_number(&found_numbers);
+    let temp = get_number(&found_numbers, &reverse_found_numbers);
 
     println!("{}", temp);
 
     temp
 }
 
-fn get_number(numbers: &Vec<Index>) -> u64 {
+fn get_number(numbers: &Vec<Index>, reverse_numbers: &Vec<Index>) -> u64 {
     let mut first_number = &numbers[0];
     let mut last_number = &numbers[0];
 
@@ -109,7 +113,9 @@ fn get_number(numbers: &Vec<Index>) -> u64 {
         if number._pos < first_number._pos {
             first_number = number;
         }
+    }
 
+    for number in reverse_numbers {
         if number._pos > last_number._pos {
             last_number = number;
         }

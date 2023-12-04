@@ -1,3 +1,4 @@
+use regex::Regex;
 use std::fs::read_to_string;
 
 // General
@@ -6,6 +7,10 @@ fn main() {
     let get_possible_games = get_id_calculation(&input);
 
     println!("Answer Part 1: {}", get_possible_games);
+
+    let get_calculated_power = get_power_of_games(&input);
+
+    println!("Answer Part 2: {}", get_calculated_power);
 }
 
 fn read_vector_from_file(filename: &String) -> Vec<String> {
@@ -46,8 +51,6 @@ fn is_possible(line: &String) -> bool {
         let split_by_color = game.split(",").collect::<Vec<&str>>();
 
         for color in split_by_color {
-            println!("{}", color);
-
             if color.contains("red") {
                 let red: u64 = color.replace("red", "").replace(" ", "").parse().unwrap();
 
@@ -75,4 +78,55 @@ fn is_possible(line: &String) -> bool {
     }
 
     true
+}
+
+// Part 2
+fn get_power_of_games(list: &Vec<String>) -> u64 {
+    let game_pattern: Regex = Regex::new(r"Game \d+:").unwrap();
+    let mut power: u64 = 0;
+
+    for line in list {
+        let line_trimmed = game_pattern.replace_all(&line, "");
+        let split: Vec<&str> = line_trimmed.split([';', ',']).collect::<Vec<&str>>();
+
+        let color_split = sort_by_max_color(split);
+
+        power += color_split.0 * color_split.1 * color_split.2;
+    }
+
+    power
+}
+
+fn sort_by_max_color(line: Vec<&str>) -> (u64, u64, u64) {
+    let mut red: u64 = 0;
+    let mut green: u64 = 0;
+    let mut blue: u64 = 0;
+
+    for color in line {
+        if color.contains("red") {
+            let trim_red: u64 = color.replace("red", "").replace(" ", "").parse().unwrap();
+
+            if trim_red > red {
+                red = trim_red;
+            }
+        }
+
+        if color.contains("green") {
+            let trim_green: u64 = color.replace("green", "").replace(" ", "").parse().unwrap();
+
+            if trim_green > green {
+                green = trim_green;
+            }
+        }
+
+        if color.contains("blue") {
+            let trim_blue: u64 = color.replace("blue", "").replace(" ", "").parse().unwrap();
+
+            if trim_blue > blue {
+                blue = trim_blue;
+            }
+        }
+    }
+
+    (red, green, blue)
 }

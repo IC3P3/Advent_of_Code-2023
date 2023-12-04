@@ -2,8 +2,9 @@ use std::fs::read_to_string;
 
 fn main() {
     let _input = read_vector_from_file(&String::from("resources/input"));
+    let calibration_value = get_combined_calibration_value(&_input);
 
-    println!("{:?}", _input);
+    println!("{}", calibration_value);
 }
 
 fn read_vector_from_file(filename: &String) -> Vec<String> {
@@ -24,4 +25,21 @@ fn get_combined_calibration_value(input_list: &Vec<String>) -> u64 {
     calibration_value
 }
 
-fn get_calibration_value(input_list: &String) -> u64 {}
+fn get_calibration_value(line: &String) -> u64 {
+    let mut first_number: char = '0';
+    let mut last_number: char = '0';
+
+    for character in line.chars() {
+        if character.is_numeric() && first_number == '0' {
+            first_number = character;
+        }
+
+        if character.is_numeric() {
+            last_number = character;
+        }
+    }
+
+    (first_number.to_string() + &last_number.to_string())
+        .parse()
+        .unwrap()
+}

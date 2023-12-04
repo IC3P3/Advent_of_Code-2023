@@ -5,9 +5,11 @@ fn main() {
     let input = read_vector_from_file(&String::from("resources/input"));
     let calibration_value = get_combined_calibration_value(&input);
 
-    println!("{}", calibration_value);
+    println!("Answer Part 1: {}", calibration_value);
 
     let calibration_value = get_combined_calibration_value_written_numbers(&input);
+
+    println!("Answer Part 2: {}", calibration_value);
 }
 
 fn read_vector_from_file(filename: &String) -> Vec<String> {
@@ -49,6 +51,12 @@ fn get_calibration_value(line: &String) -> u64 {
 }
 
 // Part 2
+#[derive(Debug)]
+struct Index {
+    _pos: usize,
+    num: u64,
+}
+
 fn get_combined_calibration_value_written_numbers(input_list: &Vec<String>) -> u64 {
     let mut calibration_value = 0;
 
@@ -60,5 +68,35 @@ fn get_combined_calibration_value_written_numbers(input_list: &Vec<String>) -> u
 }
 
 fn get_calibration_value_written_numbers(line: &String) -> u64 {
+    let possible_numbers: Vec<(String, u64)> = vec![
+        (String::from("one"), 1),
+        (String::from("two"), 2),
+        (String::from("three"), 3),
+        (String::from("four"), 4),
+        (String::from("five"), 5),
+        (String::from("six"), 6),
+        (String::from("seven"), 7),
+        (String::from("eight"), 8),
+        (String::from("nine"), 9),
+        (String::from("1"), 1),
+        (String::from("2"), 2),
+        (String::from("3"), 3),
+        (String::from("4"), 4),
+        (String::from("5"), 5),
+        (String::from("6"), 6),
+        (String::from("7"), 7),
+        (String::from("8"), 8),
+        (String::from("9"), 9),
+    ];
+
+    let found_numbers: Vec<Index> = possible_numbers
+        .iter()
+        .filter_map(|(word, num)| line.find(word).map(|_pos| Index { _pos, num: *num }))
+        .collect();
+
+    get_number(&found_numbers)
+}
+
+fn get_number(numbers: &Vec<Index>) -> u64 {
     0
 }

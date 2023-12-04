@@ -2,7 +2,7 @@ use std::fs::read_to_string;
 
 // General
 fn main() {
-    let input = read_vector_from_file(&String::from("resources/input"));
+    let input = read_vector_from_file(&String::from("resources/input.txt"));
     let calibration_value = get_combined_calibration_value(&input);
 
     println!("Answer Part 1: {}", calibration_value);

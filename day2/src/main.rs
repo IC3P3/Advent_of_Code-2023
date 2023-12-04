@@ -3,7 +3,7 @@ use std::fs::read_to_string;
 
 // General
 fn main() {
-    let input = read_vector_from_file(&String::from("resources/input"));
+    let input = read_vector_from_file(&String::from("resources/input.txt"));
     let get_possible_games = get_id_calculation(&input);
 
     println!("Answer Part 1: {}", get_possible_games);

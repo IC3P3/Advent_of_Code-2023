@@ -94,9 +94,30 @@ fn get_calibration_value_written_numbers(line: &String) -> u64 {
         .filter_map(|(word, num)| line.find(word).map(|_pos| Index { _pos, num: *num }))
         .collect();
 
-    get_number(&found_numbers)
+    let temp = get_number(&found_numbers);
+
+    println!("{}", temp);
+
+    temp
 }
 
 fn get_number(numbers: &Vec<Index>) -> u64 {
-    0
+    let mut first_number = &numbers[0];
+    let mut last_number = &numbers[0];
+
+    for number in numbers {
+        if number._pos < first_number._pos {
+            first_number = number;
+        }
+
+        if number._pos > last_number._pos {
+            last_number = number;
+        }
+    }
+
+    println!("{} {} | {:?}", first_number.num, last_number.num, numbers);
+
+    (first_number.num.to_string() + &last_number.num.to_string())
+        .parse()
+        .unwrap()
 }

@@ -28,23 +28,17 @@ struct Position {
 
 fn get_combined_parts_numbers(list: &Vec<String>) -> u64 {
     let list_array = vec_to_array(list);
-    let char_positions = get_pos_of_all_characters(list_array);
+    let char_positions = get_pos_of_all_numbers(list_array.clone());
 
-    let mut combined_value = 0;
-
-    for character_pos in char_positions {
-        combined_value += get_gear_value(&character_pos, list_array);
-    }
-
-    combined_value
+    get_gear_value(&char_positions, &list_array.clone())
 }
 
-fn get_pos_of_all_characters(char_list: Vec<Vec<char>>) -> Vec<Position> {
+fn get_pos_of_all_numbers(char_list: Vec<Vec<char>>) -> Vec<Position> {
     let mut characters_found: Vec<Position> = Vec::new();
 
     for (y, line) in char_list.iter().enumerate() {
         for (x, character) in line.iter().enumerate() {
-            if character != &'.' {
+            if character.is_numeric() {
                 characters_found.push(Position {
                     x: x as i64,
                     y: y as i64,
@@ -56,19 +50,21 @@ fn get_pos_of_all_characters(char_list: Vec<Vec<char>>) -> Vec<Position> {
     characters_found
 }
 
-fn get_gear_value(pos: &Position, array: Vec<Vec<char>>) -> u64 {
-    let possible_positions: [Position; 8] = [
-        Position { x: -1, y: -1 },
-        Position { x: 0, y: -1 },
-        Position { x: 1, y: -1 },
-        Position { x: -1, y: 1 },
-        Position { x: 0, y: 1 },
-        Position { x: 1, y: 1 },
-        Position { x: -1, y: 0 },
-        Position { x: 1, y: 0 },
-    ];
+fn get_gear_value(positions: &Vec<Position>, array: &Vec<Vec<char>>) -> u64 {
+    let mut value = 0;
+    let string_value: String;
 
-    let value = 0;
+    for (i, position) in positions.iter().enumerate() {
+        if i == 0 {}
+
+        if (position.x != positions[(i - 1) as usize].x - 1)
+            && (position.y != positions[(i - 1) as usize].y)
+        {}
+    }
 
     value
+}
+
+fn is_gear_near_number(pos: &Position, array: &Vec<Vec<char>>, value: u64) -> bool {
+    true
 }

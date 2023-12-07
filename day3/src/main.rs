@@ -89,9 +89,11 @@ fn check_for_gears(pos: &Position, chars: &Symbols) -> Option<Vec<u64>> {
             }
         }
     }
+
     if result.is_empty() {
         return None;
     }
+
     Some(result)
 }
 
@@ -111,4 +113,17 @@ fn get_combined_parts_numbers(data: &Vec<String>) -> u64 {
     }
 
     part_numbers
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    const PART_1: u64 = 521515;
+    const PART_2: u64 = 69527306;
+
+    #[test]
+    fn results() {
+        let input = read_vector_from_file(&String::from("resources/input.txt"));
+        assert_eq!(PART_1, get_combined_parts_numbers(&input));
+    }
 }

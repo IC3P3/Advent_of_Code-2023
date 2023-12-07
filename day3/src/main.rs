@@ -1,6 +1,11 @@
+use std::collections::HashMap;
 use std::fs::read_to_string;
+use std::vec;
 
 // General
+type Position = (usize, usize);
+type Symbols = HashMap<Position, String>;
+
 fn main() {
     let input = read_vector_from_file(&String::from("resources/input.txt"));
     let combined_parts_numbers = get_combined_parts_numbers(&input);
@@ -16,55 +21,94 @@ fn read_vector_from_file(filename: &String) -> Vec<String> {
         .collect()
 }
 
-fn vec_to_array(list: &Vec<String>) -> Vec<Vec<char>> {
-    list.iter().map(|line| line.chars().collect()).collect()
+fn add_to_map(pos: Position, value: &str, map: &mut Symbols) {
+    for x in 0..value.len() {
+        map.insert((pos.0 - x, pos.1), value.to_string());
+    }
 }
 
-// Part 1
-struct Position {
-    x: i64,
-    y: i64,
-}
+fn get_map_with_characters(data: &Vec<String>) -> Symbols {
+    let mut symbols = Symbols::new();
 
-fn get_combined_parts_numbers(list: &Vec<String>) -> u64 {
-    let list_array = vec_to_array(list);
-    let char_positions = get_pos_of_all_numbers(list_array.clone());
+    for (y, line) in data.iter().enumerate() {
+        let mut number = String::new();
 
-    get_gear_value(&char_positions, &list_array.clone())
-}
+        for (x, character) in line.char_indices() {
+            match character {
+                '.' => {
+                    if !number.is_empty() {
+                        add_to_map((x - 1, y), &number, &mut symbols);
+                        number.clear();
+                    }
+                }
+                n if n.is_numeric() => {
+                    number.push(character);
 
-fn get_pos_of_all_numbers(char_list: Vec<Vec<char>>) -> Vec<Position> {
-    let mut characters_found: Vec<Position> = Vec::new();
+                    if x == data[y].len() {
+                        add_to_map((x - 1, y), &number, &mut symbols);
+                        number.clear();
+                    }
+                }
+                _ => {
+                    if !number.is_empty() {
+                        add_to_map((x - 1, y), &number, &mut symbols);
+                        number.clear();
+                    }
 
-    for (y, line) in char_list.iter().enumerate() {
-        for (x, character) in line.iter().enumerate() {
-            if character.is_numeric() {
-                characters_found.push(Position {
-                    x: x as i64,
-                    y: y as i64,
-                });
+                    symbols.insert((x, y), character.to_string());
+                }
             }
         }
     }
 
-    characters_found
+    symbols
 }
 
-fn get_gear_value(positions: &Vec<Position>, array: &Vec<Vec<char>>) -> u64 {
-    let mut value = 0;
-    let string_value: String;
+fn check_for_gears(pos: &Position, chars: &Symbols) -> Option<Vec<u64>> {
+    assert!(pos.1 > 0);
+    assert!(pos.1 < chars.len());
 
-    for (i, position) in positions.iter().enumerate() {
-        if i == 0 {}
+    let mut result = vec![];
 
-        if (position.x != positions[(i - 1) as usize].x - 1)
-            && (position.y != positions[(i - 1) as usize].y)
-        {}
+    for i in [0, 2] {
+        if let Some(x) = chars.get(&(pos.1, pos.0 + i - 1)) {
+            if let Ok(num) = x.parse::<u64>() {
+                result.push(num);
+            }
+        }
+    }
+    'row: for r in [0, 2] {
+        for i in [1, 0, 2] {
+            if let Some(x) = chars.get(&(pos.1 + r - 1, pos.0 + i - 1)) {
+                if let Ok(num) = x.parse::<u64>() {
+                    result.push(num);
+                    if i == 1 {
+                        continue 'row;
+                    }
+                }
+            }
+        }
+    }
+    if result.is_empty() {
+        return None;
+    }
+    Some(result)
+}
+
+// Part 1
+fn get_combined_parts_numbers(data: &Vec<String>) -> u64 {
+    let characters: HashMap<(usize, usize), String> = get_map_with_characters(data);
+    let mut part_numbers: u64 = 0;
+
+    for (position, value) in characters.iter() {
+        if let Ok(_) = value.parse::<u32>() {
+            continue;
+        }
+
+        if let Some(numbers) = check_for_gears(position, &characters) {
+            part_numbers += numbers.iter().sum::<u64>();
+        }
     }
 
-    value
-}
-
-fn is_gear_near_number(pos: &Position, array: &Vec<Vec<char>>, value: u64) -> bool {
-    true
+    part_numbers
 }

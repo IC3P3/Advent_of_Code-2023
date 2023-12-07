@@ -11,3 +11,4 @@ The event was founded and is maintained by software engineer Eric Wastl.
 - [Day 1: Trebuchet?!](day1/README.md)
 - [Day 2: Cube Conundrum](day2/README.md)
 - [Day 3: Gear Ratios](day3/README.md)
+- [Day 4: Scratchcards](day4/README.md)

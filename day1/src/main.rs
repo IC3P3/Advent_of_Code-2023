@@ -1,15 +1,27 @@
 use std::fs::read_to_string;
+use std::time::Instant;
 
 // General
 fn main() {
     let input = read_vector_from_file(&String::from("resources/input.txt"));
+
+    let start = Instant::now();
+
     let calibration_value = get_combined_calibration_value(&input);
 
     println!("Answer Part 1: {}", calibration_value);
 
+    let duration = start.elapsed();
+    println!("Time elapsed for day1 part1 is: {:?}", duration);
+
+    let start = Instant::now();
+
     let calibration_value = get_combined_calibration_value_written_numbers(&input);
 
+    let duration = start.elapsed();
+
     println!("Answer Part 2: {}", calibration_value);
+    println!("Time elapsed for day1 is: {:?}", duration);
 }
 
 fn read_vector_from_file(filename: &String) -> Vec<String> {
@@ -100,8 +112,6 @@ fn get_calibration_value_written_numbers(line: &String) -> u64 {
 
     let temp = get_number(&found_numbers, &reverse_found_numbers);
 
-    println!("{}", temp);
-
     temp
 }
 
@@ -120,8 +130,6 @@ fn get_number(numbers: &Vec<Index>, reverse_numbers: &Vec<Index>) -> u64 {
             last_number = number;
         }
     }
-
-    println!("{} {} | {:?}", first_number.num, last_number.num, numbers);
 
     (first_number.num.to_string() + &last_number.num.to_string())
         .parse()

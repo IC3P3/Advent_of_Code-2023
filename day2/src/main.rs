@@ -1,16 +1,28 @@
 use regex::Regex;
 use std::fs::read_to_string;
+use std::time::Instant;
 
 // General
 fn main() {
     let input = read_vector_from_file(&String::from("resources/input.txt"));
+
+    let start = Instant::now();
+
     let get_possible_games = get_id_calculation(&input);
 
     println!("Answer Part 1: {}", get_possible_games);
 
+    let duration = start.elapsed();
+    println!("Time elapsed for day2 part1 is: {:?}", duration);
+
+    let start = Instant::now();
+
     let get_calculated_power = get_power_of_games(&input);
 
     println!("Answer Part 2: {}", get_calculated_power);
+
+    let duration = start.elapsed();
+    println!("Time elapsed for day2 part2 is: {:?}", duration);
 }
 
 fn read_vector_from_file(filename: &String) -> Vec<String> {
@@ -103,28 +115,26 @@ fn sort_by_max_color(line: Vec<&str>) -> (u64, u64, u64) {
     let mut blue: u64 = 0;
 
     for color in line {
-        if color.contains("red") {
-            let trim_red: u64 = color.replace("red", "").replace(" ", "").parse().unwrap();
-
-            if trim_red > red {
-                red = trim_red;
+        match color {
+            s if s.contains("red") => {
+                let trim_red: u64 = s.replace("red", "").replace(" ", "").parse().unwrap();
+                if trim_red > red {
+                    red = trim_red;
+                }
             }
-        }
-
-        if color.contains("green") {
-            let trim_green: u64 = color.replace("green", "").replace(" ", "").parse().unwrap();
-
-            if trim_green > green {
-                green = trim_green;
+            s if s.contains("green") => {
+                let trim_green: u64 = s.replace("green", "").replace(" ", "").parse().unwrap();
+                if trim_green > green {
+                    green = trim_green;
+                }
             }
-        }
-
-        if color.contains("blue") {
-            let trim_blue: u64 = color.replace("blue", "").replace(" ", "").parse().unwrap();
-
-            if trim_blue > blue {
-                blue = trim_blue;
+            s if s.contains("blue") => {
+                let trim_blue: u64 = s.replace("blue", "").replace(" ", "").parse().unwrap();
+                if trim_blue > blue {
+                    blue = trim_blue;
+                }
             }
+            _ => {}
         }
     }
 

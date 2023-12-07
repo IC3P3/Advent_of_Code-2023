@@ -17,7 +17,7 @@ fn main() {
     println!("Answer Part 1: {}", combined_parts_numbers);
 
     let duration = start.elapsed();
-    println!("Time elapsed for day1 part1 is: {:?}", duration);
+    println!("Time elapsed for day3 part1 is: {:?}", duration);
 }
 
 fn read_vector_from_file(filename: &String) -> Vec<String> {
@@ -90,7 +90,6 @@ fn check_for_gears(pos: &Position, chars: &Symbols) -> Option<Vec<u64>> {
                 if let Ok(num) = x.parse::<u64>() {
                     result.push(num);
                     if i == 1 {
-                        // break, corners will be the same number, if any
                         continue 'row;
                     }
                 }

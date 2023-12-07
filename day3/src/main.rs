@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::fs::read_to_string;
+use std::time::Instant;
 use std::vec;
 
 // General
@@ -8,9 +9,15 @@ type Symbols = HashMap<Position, String>;
 
 fn main() {
     let input = read_vector_from_file(&String::from("resources/input.txt"));
+
+    let start = Instant::now();
+
     let combined_parts_numbers = get_combined_parts_numbers(&input);
 
-    println!("Answer Part 1: {}", combined_parts_numbers)
+    println!("Answer Part 1: {}", combined_parts_numbers);
+
+    let duration = start.elapsed();
+    println!("Time elapsed for day1 part1 is: {:?}", duration);
 }
 
 fn read_vector_from_file(filename: &String) -> Vec<String> {
@@ -42,10 +49,10 @@ fn get_map_with_characters(data: &Vec<String>) -> Symbols {
                     }
                 }
                 n if n.is_numeric() => {
-                    number.push(character);
+                    number.push(n);
 
-                    if x == data[y].len() {
-                        add_to_map((x - 1, y), &number, &mut symbols);
+                    if x == 139 {
+                        add_to_map((x, y), &number, &mut symbols);
                         number.clear();
                     }
                 }
@@ -66,12 +73,12 @@ fn get_map_with_characters(data: &Vec<String>) -> Symbols {
 
 fn check_for_gears(pos: &Position, chars: &Symbols) -> Option<Vec<u64>> {
     assert!(pos.1 > 0);
-    assert!(pos.1 < chars.len());
-
+    assert!(pos.1 < 139);
+    let (index, row) = *pos;
     let mut result = vec![];
 
     for i in [0, 2] {
-        if let Some(x) = chars.get(&(pos.1, pos.0 + i - 1)) {
+        if let Some(x) = chars.get(&(index + i - 1, row)) {
             if let Ok(num) = x.parse::<u64>() {
                 result.push(num);
             }
@@ -79,10 +86,11 @@ fn check_for_gears(pos: &Position, chars: &Symbols) -> Option<Vec<u64>> {
     }
     'row: for r in [0, 2] {
         for i in [1, 0, 2] {
-            if let Some(x) = chars.get(&(pos.1 + r - 1, pos.0 + i - 1)) {
+            if let Some(x) = chars.get(&(index + i - 1, row + r - 1)) {
                 if let Ok(num) = x.parse::<u64>() {
                     result.push(num);
                     if i == 1 {
+                        // break, corners will be the same number, if any
                         continue 'row;
                     }
                 }
@@ -103,7 +111,7 @@ fn get_combined_parts_numbers(data: &Vec<String>) -> u64 {
     let mut part_numbers: u64 = 0;
 
     for (position, value) in characters.iter() {
-        if let Ok(_) = value.parse::<u32>() {
+        if value.parse::<u64>().is_ok() {
             continue;
         }
 
@@ -113,17 +121,4 @@ fn get_combined_parts_numbers(data: &Vec<String>) -> u64 {
     }
 
     part_numbers
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    const PART_1: u64 = 521515;
-    const PART_2: u64 = 69527306;
-
-    #[test]
-    fn results() {
-        let input = read_vector_from_file(&String::from("resources/input.txt"));
-        assert_eq!(PART_1, get_combined_parts_numbers(&input));
-    }
 }

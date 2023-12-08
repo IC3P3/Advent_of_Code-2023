@@ -18,6 +18,15 @@ fn main() {
 
     let duration = start.elapsed();
     println!("Time elapsed for day3 part1 is: {:?}", duration);
+
+    let start = Instant::now();
+
+    let gear_ratio = get_gear_ratio(&input);
+
+    println!("Answer Part 2: {}", gear_ratio);
+
+    let duration = start.elapsed();
+    println!("Time elapsed for day3 part2 is: {:?}", duration);
 }
 
 fn read_vector_from_file(filename: &String) -> Vec<String> {
@@ -74,11 +83,11 @@ fn get_map_with_characters(data: &Vec<String>) -> Symbols {
 fn check_for_gears(pos: &Position, chars: &Symbols) -> Option<Vec<u64>> {
     assert!(pos.1 > 0);
     assert!(pos.1 < 139);
-    let (index, row) = *pos;
+    let (x, y) = *pos;
     let mut result = vec![];
 
     for i in [0, 2] {
-        if let Some(x) = chars.get(&(index + i - 1, row)) {
+        if let Some(x) = chars.get(&(x + i - 1, y)) {
             if let Ok(num) = x.parse::<u64>() {
                 result.push(num);
             }
@@ -86,7 +95,7 @@ fn check_for_gears(pos: &Position, chars: &Symbols) -> Option<Vec<u64>> {
     }
     'row: for r in [0, 2] {
         for i in [1, 0, 2] {
-            if let Some(x) = chars.get(&(index + i - 1, row + r - 1)) {
+            if let Some(x) = chars.get(&(x + i - 1, y + r - 1)) {
                 if let Ok(num) = x.parse::<u64>() {
                     result.push(num);
                     if i == 1 {
@@ -120,4 +129,24 @@ fn get_combined_parts_numbers(data: &Vec<String>) -> u64 {
     }
 
     part_numbers
+}
+
+// Part 2
+fn get_gear_ratio(data: &Vec<String>) -> u64 {
+    let characters: HashMap<(usize, usize), String> = get_map_with_characters(data);
+    let mut ratio: u64 = 0;
+
+    for (position, value) in characters.iter() {
+        if value != "*" {
+            continue;
+        }
+
+        if let Some(numbers) = check_for_gears(position, &characters) {
+            if numbers.len() == 2 {
+                ratio += numbers[0] * numbers[1];
+            }
+        }
+    }
+
+    ratio
 }

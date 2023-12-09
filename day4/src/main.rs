@@ -61,7 +61,7 @@ fn extract_to_scratchcards(all_cards: &Vec<String>) -> Vec<Scratchcard> {
             .collect::<Vec<&str>>();
 
         let mut numbers: Vec<u64> = vec![];
-        for number in &numbers_string[1..numbers_string.len() - 1] {
+        for number in &numbers_string[1..numbers_string.len()] {
             numbers.push(number.parse().unwrap());
         }
 
@@ -77,8 +77,6 @@ fn get_combined_winning_number(lines: &Vec<String>) -> u64 {
     let mut winnings = 0;
 
     for game in all_games {
-        println!("{:?}", game.2);
-
         let won_games = game
             .2
             .iter()

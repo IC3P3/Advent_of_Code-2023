@@ -16,14 +16,14 @@ fn main() {
     let duration = start.elapsed();
     println!("Time elapsed for day4 part1 is: {:?}", duration);
 
-    /* let start = Instant::now();
+    let start = Instant::now();
 
-    let gear_ratio = get_gear_ratio(&input);
+    let card_count = get_total_card_count(&input);
 
-    println!("Answer Part 2: {}", gear_ratio);
+    println!("Answer Part 2: {}", card_count);
 
     let duration = start.elapsed();
-    println!("Time elapsed for day3 part2 is: {:?}", duration);*/
+    println!("Time elapsed for day3 part2 is: {:?}", duration);
 }
 
 fn read_vector_from_file(filename: &String) -> Vec<String> {
@@ -80,10 +80,7 @@ fn get_combined_winning_number(lines: &Vec<String>) -> u64 {
         let won_games = game
             .2
             .iter()
-            .filter(|&number| {
-                let contained = game.1.contains(number);
-                contained
-            })
+            .filter(|&number| game.1.contains(number))
             .collect::<Vec<&u64>>();
 
         if won_games.len() != 0 {
@@ -92,4 +89,24 @@ fn get_combined_winning_number(lines: &Vec<String>) -> u64 {
     }
 
     winnings
+}
+
+// Part 2
+fn get_total_card_count(lines: &Vec<String>) -> usize {
+    let all_games = extract_to_scratchcards(lines);
+    let mut count = vec![1; all_games.len()];
+
+    for i in 0..all_games.len() {
+        let won_games = all_games[i]
+            .2
+            .iter()
+            .filter(|&number| all_games[i].1.contains(number))
+            .collect::<Vec<&u64>>();
+
+        for j in 0..won_games.len() {
+            count[i + j + 1] += count[i];
+        }
+    }
+
+    count.iter().sum::<usize>()
 }
